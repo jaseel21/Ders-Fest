@@ -1,0 +1,94 @@
+<style>
+  body {
+    background-color: #202126;
+  }
+
+  h1,
+  h2 {
+    margin-top: 20px;
+    color: #fff;
+  }
+
+  form label {
+    font-weight: bold;
+  }
+
+  form input,
+  form select {
+    margin-bottom: 15px;
+  }
+
+  .table-responsive {
+    margin-top: 30px;
+  }
+</style>
+<div class="container py-3">
+  <h1 class="mb-3">Contestant Registration</h1>
+
+  <form action="/admin/contestants/upload" method="POST" enctype="multipart/form-data" class="p-4 bg-white rounded">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="contestantNumber">Contestant Number:</label>
+          <input type="number" name="contestantNumber" class="form-control">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="name">Contestant Name:</label>
+          <input type="text" name="name" class="form-control">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="groupName">Group Name:</label>
+          <select name="groupName" class="form-control">
+            <option value="Ma'abariyah">Ma'abariyah</option>
+            <option value="Fakhriyah">Fakhriyah</option>
+            <option value="Nizamiyah">Nizamiyah</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-12 mt-3">
+        <label for="file">Or Upload Excel File:</label>
+        <input type="file" name="file" class="form-control" accept=".xlsx">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block ms-3 mt-3" style="width:150px;">Submit</button>
+    </div>
+  </form>
+
+
+  <h2>Registered Contestants</h2>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead class="thead-dark">
+        <tr>
+          <th>Contestant Number</th>
+          <th>Name</th>
+          <th>Group</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each contestants}}
+        <tr>
+          <td>{{this.contestantNumber}}</td>
+          <td>{{this.name}}</td>
+          <td>{{this.groupName}}</td>
+          <td>
+            <!-- Delete Button -->
+            <form action="/admin/contestants/{{this._id}}/delete" method="POST" style="display: inline;">
+              <button type="submit" class="btn btn-danger btn-sm"
+                onclick="return confirm('Are you sure you want to delete this contestant?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {{else}}
+        <tr>
+          <td colspan="4" class="text-center">No contestants found.</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>

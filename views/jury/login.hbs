@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jury</title>
+     <style>
+        :root {
+            --background-color: #353a65;
+            --primary-accent: #FFB86C;
+            --secondary-accent: #8BE9FD;
+            --highlight-color: #FF79C6;
+            --text-light: #F8F8F2;
+            --dark: #282A36;
+            --accent-shadow: #6272A4;
+        }
+
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        .container-fluid {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100dvh;
+            background: var(--background-color);
+            color: var(--text-light);
+        }
+
+        .container {
+            max-width: 400px;
+        }
+
+        label {
+            margin-bottom: 5px;
+        }
+
+        input {
+            border: none;
+        }
+
+        .btn {
+            height: 40px;
+            background: var(--primary-accent);
+            color: var(--dark);
+        }
+
+        .btn:hover {
+            background: var(--secondary-accent);
+            color: var(--dark);
+        }
+    </style>
+</head>
+
+<body>
+   
+    <div class="container-fluid">
+        <div class="container my-5">
+            <h2 class="mb-4">Jury Login</h2>
+            <form action="/jury/login" method="POST">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" required>
+                </div>
+
+                <div class="form-group mt-4">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn mt-4">Login</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

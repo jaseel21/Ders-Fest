@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>manage items</title>
+    <style>
+        * {
+            font-family: 'General Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #888;
+        }
+
+        .container {
+            max-width: 800px;
+            /* Set a maximum width for the container */
+            margin: 0 auto;
+            /* Center the container */
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            /* Increase the font size */
+            font-weight: bold;
+            /* Make the font bold */
+            color: #007bff;
+            /* Primary color */
+        }
+
+        h4 {
+            font-size: 1.75rem;
+            /* Set font size for h4 */
+            margin-bottom: 1rem;
+            /* Space below the h4 */
+        }
+
+        .list-group {
+            margin-top: 1rem;
+            /* Space above the list */
+            gap: 5;
+        }
+
+        .list-group-item {
+            transition: background-color 0.3s;
+            /* Smooth transition for background color */
+        }
+
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+            /* Light gray on hover */
+        }
+
+        .badge {
+            font-size: 0.9rem;
+            /* Font size for contestant number badge */
+        }
+
+        /* Styles for the contestant list */
+        .contestant-list {
+            margin-top: 20px;
+            /* Space above the list */
+            padding: 15px;
+            /* Padding inside the list */
+            border: 1px solid #ccc;
+            /* Light gray border */
+            border-radius: 5px;
+            /* Rounded corners */
+            background-color: #f9f9f9;
+            /* Light background color */
+            max-height: 400px;
+            /* Maximum height of the list */
+            overflow-y: auto;
+            /* Enable scrolling if content exceeds max height */
+        }
+
+        /* Styles for each contestant item */
+        .contestant-item {
+            background: #fff;
+            padding: 10px;
+            /* Padding for each item */
+            border-bottom: 1px solid #e0e0e0;
+            /* Light gray bottom border */
+            display: flex;
+            /* Flexbox for alignment */
+            justify-content: space-between;
+            /* Space between name and contestant number */
+            align-items: center;
+            /* Center align items vertically */
+        }
+
+        /* Hover effect for contestant items */
+        .contestant-item:hover {
+            background-color: #e8f0fe;
+            /* Light blue background on hover */
+        }
+
+        /* Style for no results message */
+        .no-results {
+            padding: 10px;
+            /* Padding for no results message */
+            text-align: center;
+            /* Center the text */
+            color: #888;
+            /* Gray color for text */
+        }
+
+        /* Scratch Area Styling */
+        #scratchArea {
+            cursor: crosshair;
+        }
+
+        #hiddenCode {
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="mt-4 mb-3 text-primary">Manage Contestants for {{item.name}}</h2>
+        <h4>Add Contestant</h4>
+        <form id="searchContestantForm">
+            <div class="form-group">
+                <input type="text" id="searchContestant" class="form-control" placeholder="Search for contestants" />
+            </div>
+        </form>
+
+        <div id="contestantList"></div> <!-- Search results will be displayed here -->
+        <h4 class="mb-3 mt-5">Current Participants</h4>
+        <ul id="participantsList" class="list-group">
+            {{#if participantScores.length}}
+            {{#each participantScores}}
+            <li class="list-group-item d-flex justify-content-between align-items-center"
+                data-item-id="{{this.itemId}}">
+                <div class="d-flex w-100 justify-content-between">
+                    <div>
+                        <!-- Displaying contestant number and name -->
+                        <span class="badge bg-secondary">{{this.contestantNumber}}</span>
+                        <span>{{this.name}}</span>
+                        <!-- Display score and badge if available -->
+                        {{#if this.score}}
+                        <span class="badge bg-info ms-3">Score: {{this.score}}</span>
+                        {{#if this.badge}}
+                        <span class="badge bg-success ms-3">Badge: {{this.badge}}</span>
+                        {{/if}}
+                        {{/if}}
+                    </div>
+
+                    <!-- Delete button for each contestant -->
+                    <button class="btn btn-danger btn-sm"
+                        onclick="deleteContestant('{{this.id}}', '{{../itemId}}')">Delete</button>
+                    <input type="hidden" value="{{this.itemId}}" class="item-id" /> <!-- Hidden field for itemId -->
+                </div>
+            </li>
+            {{/each}}
+            {{else}}
+            <li class="list-group-item">No participants yet.</li>
+            {{/if}}
+        </ul>
+    </div>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Contestant Search and Add Functionality
+        const searchContestantInput = document.getElementById('searchContestant');
+        const contestantList = document.getElementById('contestantList');
+        const participantsList = document.getElementById('participantsList');
+        let timeoutId;
+
+        const itemId = '{{itemId}}'; // Item ID passed from template
+
+        console.log("Item ID from template:", itemId); // Verify the item ID is correctly passed
+
+        // Listen for input changes in the search field
+        searchContestantInput.addEventListener('input', function () {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(async () => {
+                const query = searchContestantInput.value;
+
+                // Clear the list if the input is empty
+                if (!query) {
+                    contestantList.innerHTML = '';
+                    return;
+                }
+
+                // Show loading message
+                contestantList.innerHTML = '<p>Loading...</p>';
+
+                // Fetch search results from the server
+                try {
+                    const response = await fetch(`/admin/contestants/search?q=${query}`);
+                    const contestants = await response.json();
+
+                    // Clear previous results
+                    contestantList.innerHTML = '';
+
+                    // Display contestants if found
+                    if (contestants.length > 0) {
+                        contestants.forEach(contestant => {
+                            const div = document.createElement('div');
+                            div.classList.add('contestant-item');
+                            div.innerHTML = `
+                            <span>${contestant.name} (${contestant.contestantNumber})</span>
+                            <input type="hidden" class="contestant-id" value="${contestant._id}" />
+                            <button class="btn btn-success" onclick="addContestantToItem('${contestant._id}')">Add</button>
+                        `;
+                            contestantList.appendChild(div);
+                        });
+                    } else {
+                        contestantList.innerHTML = '<p class="no-results">No contestants found</p>';
+                    }
+                } catch (error) {
+                    console.error('Error fetching search results:', error);
+                    contestantList.innerHTML = '<p class="error-message">Error searching contestants</p>';
+                }
+            }, 300); // Debounce the search input
+        });
+
+        // Function to add the contestant to the item
+        async function addContestantToItem(contestantId) {
+            try {
+                const response = await fetch('/admin/items/add-contestant', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ itemId, contestantId }),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Contestant added successfully!');
+
+                    // Refresh the participants list (optional)
+                    fetchParticipantsList();
+
+                    // Optionally, redirect to the item page to see the updated list
+                    window.location.href = `/admin/items/${itemId}`; // Redirect to the updated item page
+                } else {
+                    alert('Failed to add contestant: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Failed to add contestant:', error);
+                alert('Failed to add contestant. Please try again.');
+            }
+        }
+
+        // Function to fetch and update participants list (optional)
+        async function fetchParticipantsList() {
+            try {
+                const response = await fetch(`/admin/items/${itemId}/participants`);
+                const participants = await response.json();
+
+                participantsList.innerHTML = ''; // Clear the previous participants
+
+                // Populate participants list
+                if (participants.length > 0) {
+                    participants.forEach(participant => {
+                        const li = document.createElement('li');
+                        li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+                        li.setAttribute('data-item-id', participant.itemId);
+                        li.innerHTML = `
+                        <div class="d-flex w-100 justify-content-between">
+                            <div>
+                                <span class="badge bg-secondary">${participant.contestantNumber}</span>
+                                <span>${participant.name}</span>
+                                ${participant.badge ? `<span class="badge bg-success ms-3">${participant.badge}</span>
+                                <input type="number" class="form-control custom-points-input" placeholder="Enter custom points" />` : ''}
+                            </div>
+                            <input type="hidden" value="${participant.itemId}" class="item-id" />
+                        </div>
+                    `;
+                        participantsList.appendChild(li);
+                    });
+                } else {
+                    participantsList.innerHTML = '<li class="list-group-item">No participants yet.</li>';
+                }
+            } catch (error) {
+                console.error('Error fetching participants:', error);
+            }
+        }
+
+        async function deleteContestant(contestantId, itemId) {
+            const confirmation = confirm("Are you sure you want to delete this contestant?");
+            if (!confirmation) return;
+
+            try {
+                const response = await fetch(`/admin/items/${itemId}/contestants/${contestantId}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    alert("Contestant deleted successfully.");
+                    location.reload(); // Reload page to update the list
+                } else {
+                    alert("Failed to delete contestant.");
+                }
+            } catch (error) {
+                console.error("Error deleting contestant:", error);
+                alert("An error occurred. Please try again.");
+            }
+        }
+
+
+    </script>
+
+</body>
+
+</html>

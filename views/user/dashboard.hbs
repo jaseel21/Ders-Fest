@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        :root {
+            --white: #fff;
+            --dark: #000000;
+
+            --light-white: #F1F1F1;
+
+            --ivory: #FFFFF0;
+
+            --dark-gray: #333333;
+
+            /* Vibrant Gradient Colors */
+            --vibrant-gradient-top-left: #9564E0;
+            --vibrant-gradient-top-right: #E1729C;
+            --vibrant-gradient-bottom-left: #5781F5;
+            --vibrant-gradient-bottom-right: #8A65FF;
+
+
+            /* Box Shadow */
+            --card-shadow: 4px 6px 15px rgba(0, 0, 0, 0.2);
+
+            --glass-blur: 10px;
+
+            --vibrant-gradient: linear-gradient(to bottom right,
+                    var(--vibrant-gradient-top-left),
+                    var(--vibrant-gradient-top-right) 33%,
+                    var(--vibrant-gradient-bottom-left) 66%,
+                    var(--vibrant-gradient-bottom-right));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'General Sans', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            background: #ccc;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--vibrant-gradient);
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+
+
+        header {
+            height: 70px;
+        }
+
+        .search-container {
+            max-width: 300px;
+            position: relative;
+            padding-top: 10px;
+            float: right;
+        }
+
+        #searchInput {
+            width: calc(100% - 110px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px 0 0 10px;
+            outline: none;
+            display: inline-block;
+        }
+
+        #getResultButton {
+            padding: 10px;
+            border: none;
+            background: var(--vibrant-gradient);
+            color: #fff;
+            border-radius: 0 10px 10px 0;
+            cursor: pointer;
+        }
+
+        #getResultButton:hover {
+            background-color: #0056b3;
+        }
+
+
+        .scroll-container {
+            display: flex;
+            overflow: hidden;
+            /* Wraps cards on larger screens */
+            gap: 16px;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari, Opera */
+        }
+
+        .icon-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--ivory);
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vibrant-gradient-bottom-left);
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .icon-container button {
+            border: none;
+            outline: none;
+            color: var(--vibrant-gradient-bottom-left);
+            background: none;
+        }
+
+        .groupPoints-card {
+            position: relative;
+        }
+
+        .groupPoints-card,
+        .topPerformers-card {
+            flex: 1 1 calc(33.333% - 16px);
+            /* 3 cards per row on desktop screens */
+            /* Grassy background with vibrant gradient */
+            background: linear-gradient(to bottom right,
+                    var(--vibrant-gradient-top-left),
+                    var(--vibrant-gradient-top-right),
+                    var(--vibrant-gradient-bottom-left),
+                    var(--vibrant-gradient-bottom-right));
+            background-size: 400% 400%;
+            animation: gradientMotion 5s ease infinite;
+            /* Full height of the viewport */
+            color: white;
+            box-shadow: var(--card-shadow);
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            min-width: 300px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+
+
+        /* Animating the gradient */
+        @keyframes gradientMotion {
+            0% {
+                background-position: 0% 0%;
+            }
+
+            50% {
+                background-position: 100% 100%;
+            }
+
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+
+
+
+
+        @media(max-width:999px) {
+            .scroll-container {
+                display: flex;
+                /* Arranges cards in a row */
+                overflow-x: auto;
+                /* Enables horizontal scrolling */
+                gap: 16px;
+                /* Space between cards */
+                padding: 0px;
+
+            }
+
+        }
+
+        .groupPoints-card p {
+            box-shadow: 4px 6px 15px rgba(0, 0, 0, 0.2);
+            background: var(--dark);
+            width: 130px;
+            color: #fff;
+            padding: 5px 16px;
+            margin: 0px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+        }
+
+        .groupPoints-card th,
+        td {
+            border: 1px dashed none;
+            border-radius: 10px;
+            padding: 5px 10px;
+            text-align: left;
+        }
+
+        .topPerformersByGroup .badge {
+            background: var(--vibrant-gradient-bottom-left);
+            color: var(--white);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .topPerformersByGroup h5 {
+            color: var(--dark);
+            font-size: 20px;
+        }
+
+        .topPerformersByGroup tbody {
+            background: #333;
+        }
+
+
+        .topPerformersByGroup th {
+            background-color: var(--light-white);
+            color: var(--dark-gray);
+            padding: 8px 15px;
+            border-radius: 15px;
+        }
+
+        .topPerformersByGroup td {
+            background: var(--dark);
+            color: var(--ivory);
+            padding: 6px 20px;
+            margin: 5px;
+            font-size: 16px;
+
+        }
+
+        .card h1 {
+            font-size: 5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+
+        }
+
+        .topPerformersByGroup {
+            display: none;
+            /* Hide all tables on mobile by default */
+        }
+
+        .topPerformersByGroup[data-group="0"] {
+            display: block;
+            /* Show the first table by default on mobile */
+        }
+
+        .topPerformersByGroup-Btn {
+            background: var(--dark);
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .topPerformersByGroup-Btn:hover {
+            background: var(--ivory);
+            color: #000;
+        }
+
+        @media (min-width: 768px) {
+            .topPerformersByGroup {
+                display: block;
+                /* Show all tables on larger screens */
+            }
+
+        }
+
+        @media (max-width: 768px) {
+            .groupPoints-card p {
+                font-size: 14px;
+                margin: 0px;
+            }
+
+            .topPerformersByGroup .badge {
+                display: none;
+            }
+        }
+
+
+        .topPerformers-card {
+            text-align: center;
+        }
+
+        .topPerformers-card p {
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <header>
+            <div class="search-container">
+                <form action="/user/results" method="POST">
+                    <input type="text" id="searchInput" name="contestantNumber" placeholder="Type Your Number"
+                        required />
+                    <button type="submit" id="getResultButton">Get Result</button>
+                </form>
+            </div>
+
+
+
+        </header>
+        <div class="container">
+            <h3 class="mb-3 text-secondary">Group Points</h3>
+            <div class="scroll-container">
+                <div class="col-md-4 card groupPoints-card mb-4">
+                    <div class="icon-container">
+                        <form action="/user/group-results" method="POST">
+                            {{#each groupPoints.First}}
+                            <input type="hidden" value="{{groupname}}" id="searchInput" name="groupName" required />
+                            {{/each}}
+                            <button type="submit" id="getGroupResultButton"><i
+                                    class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <table>
+                        <tbody>
+                            {{#each groupPoints.First}}
+                            <td>
+                                <p>{{groupname}}</p>
+                            </td>
+                            <tr>
+                                <td>
+                                    <h1>{{totalPoints}}</h1>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-md-4 card groupPoints-card mb-4">
+                    <div class="icon-container">
+                        <form action="/user/group-results" method="POST">
+                            {{#each groupPoints.Second}}
+                            <input type="hidden" value="{{groupname}}" id="searchInput" name="groupName" required />
+                            {{/each}}
+                            <button type="submit" id="getGroupResultButton"><i
+                                    class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <table>
+                        <tbody>
+                            {{#each groupPoints.Second}}
+                            <td>
+                                <p>{{groupname}}</p>
+                            </td>
+                            <tr>
+                                <td>
+                                    <h1>{{totalPoints}}</h1>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-md-4 card groupPoints-card mb-4">
+                    <div class="icon-container">
+                        <form action="/user/group-results" method="POST">
+                            {{#each groupPoints.Third}}
+                            <input type="hidden" value="{{groupname}}" id="searchInput" name="groupName" required />
+                            {{/each}}
+                            <button type="submit" id="getGroupResultButton"><i
+                                    class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <table>
+                        <tbody>
+                            {{#each groupPoints.Third}}
+                            <td>
+                                <p>{{groupname}}</p>
+                            </td>
+                            <tr>
+                                <td>
+                                    <h1>{{totalPoints}}</h1>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <h3 class="mb-3 text-secondary">Top Performers</h3>
+            <div class="scroll-container">
+                <div class="col-md-4 card topPerformers-card">
+                    {{#each topPerformers.subjunior}}
+                    <p>Top performer of Sub Junior, <strong>{{name}}</strong>, earned
+                    <h1>{{totalPoints}}</h1> points for {{group}}.</p>
+                    {{/each}}
+                </div>
+                <div class="col-md-4 card topPerformers-card">
+                    {{#each topPerformers.junior}}
+                    <p>Top performer of Junior, <strong>{{name}}</strong>, earned
+                    <h1>{{totalPoints}}</h1> points for {{group}}.</p>
+                    {{/each}}
+                </div>
+                <div class="col-md-4 card topPerformers-card">
+                    {{#each topPerformers.senior}}
+                    <p>Top performer of Senior, <strong>{{name}}</strong>, earned
+                    <h1>{{totalPoints}}</h1> points for {{group}}.</p>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row mt-3">
+                <!-- Buttons for each group, visible only on mobile screens -->
+                <div class="col-12 d-md-none text-center mb-3 topPerformersByGroup-Btn-container">
+                    {{#each topPerformersByGroup}}
+                    <button class="btn topPerformersByGroup-Btn group-btn"
+                        data-group="{{@index}}">{{groupname}}</button>
+                    {{/each}}
+                </div>
+
+                <!-- Tables for each group -->
+                {{#each topPerformersByGroup}}
+                <div class="col-md-4 topPerformersByGroup" data-group="{{@index}}">
+                    <table class="table">
+                        <h5><span class="badge">{{groupname}}</span> Top Performers</h5>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Total Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each topPerformers}}
+                            <tr>
+                                <td>{{name}}</td>
+                                <td>{{totalPoints}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

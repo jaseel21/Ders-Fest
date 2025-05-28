@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jury Panel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <style>
+        :root {
+            --background-color: #353a65;
+            --primary-accent: #FFB86C;
+            --secondary-accent: #8BE9FD;
+            --highlight-color: #FF79C6;
+            --text-light: #F8F8F2;
+            --dark: #282A36;
+            --accent-shadow: #6272A4;
+        }
+
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        .container-fluid {
+            height: 100vh;
+            background: var(--background-color);
+        }
+
+        .container-fluid h2 {
+            padding-top: 30px;
+            color: var(--text-light)
+        }
+
+        .container-fluid h2 span {
+            color: var(--primary-accent);
+        }
+
+        .container-fluid h5 span {
+            color: var(--primary-accent);
+        }
+
+        .contestant-container {}
+
+        #saveScoresBtn {
+            background: var(--primary-accent);
+            outline: none;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="container">
+            <h2 class="mb-3">Jury Panel for <span>{{jury.username}}</span></h2>
+            <ul id="assignedItemsList" class="list-group mt-5">
+                {{#if jury.assignedItems.length}}
+                {{#each jury.assignedItems}}
+                <li class="parent-section list-group-item" data-item-id="{{this._id}}" data-item-type="{{this.type}}"
+                    data-item-category="{{this.category}}" data-item-stage="{{this.stage}}">
+                    <!-- Adding item ID to list item -->
+                    <h5>Item: <span>{{this.name}}</span></h5>
+                    <ul class="list-group">
+                        {{#if this.participants.length}}
+                        {{#each this.participants}}
+                        <li
+                            class="list-group-item contestant-container d-flex justify-content-between align-items-center">
+                            <div class="d-flex w-100 justify-content-between">
+                                <div class="">
+                                    {{!-- <span class="badge bg-info p-2 ms-3">{{this.groupName}}</span> --}}
+                                    <span class="badge bg-secondary p-2">{{this.contestantNumber}}</span>
+                                    {{#if this.badge}}
+                                    <span class="badge bg-success p-2 ms-3">{{this.badge}}</span>
+                                    {{/if}}
+                                </div>
+                                <input type="number" class="form-control w-25 score-input" placeholder="Score"
+                                    value="{{this.score}}" min="0" max="100" step="1" />
+                                <input type="hidden" value="{{this._id}}" class="contestant-id" />
+                                <input type="hidden" value="{{this.groupName}}" class="group-name" />
+                            </div>
+                        </li>
+                        {{/each}}
+                        {{else}}
+                        <li class="list-group-item">No participants yet.</li>
+                        {{/if}}
+                    </ul>
+                </li>
+                {{/each}}
+                {{else}}
+                <li class="list-group-item">No assigned items for this jury.</li>
+                {{/if}}
+            </ul>
+            <button id="saveScoresBtn" class="btn mt-4">Save Scores</button>
+
+            <!-- Modal for Score Edit -->
+            <div class="modal fade" id="editScoreModal" tabindex="-1" role="dialog"
+                aria-labelledby="editScoreModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editScoreModalLabel">Edit Score</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="number" class="form-control" id="editScoreInput" placeholder="Enter new score"
+                                min="0" max="100" step="1">
+                            <input type="hidden" id="editContestantId">
+                            <input type="hidden" id="editGroupName"> <!-- Added groupName for editing -->
+                            <input type="hidden" id="editItemId"> <!-- Added item ID for editing -->
+                            <input type="hidden" id="editItemType"> <!-- Added item type for editing -->
+                            <input type="hidden" id="editItemCategory"> <!-- Added item category for editing -->
+                            <input type="hidden" id="editItemStage"> <!-- Added item stage for editing -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="saveEditScoreBtn">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Save scores button event listener
+            document.getElementById('saveScoresBtn').addEventListener('click', async function () {
+                const scores = [];
+                const scoreInputs = document.querySelectorAll('.score-input');
+                const scoreMap = new Map(); // To track scores by item ID
+
+                scoreInputs.forEach(function (input) {
+                    const score = input.value;
+                    const contestantId = input.closest('.d-flex').querySelector('.contestant-id').value; // Get contestant ID
+                    const groupName = input.closest('.d-flex').querySelector('.group-name').value; // Get group name
+                    const itemElement = input.closest('.parent-section'); // Get item element
+
+
+                    const itemId = itemElement.dataset.itemId; // Get item ID
+                    const itemType = itemElement.dataset.itemType; // Get item type
+                    const itemCategory = itemElement.dataset.itemCategory; // Get item category
+                    const itemStage = itemElement.dataset.itemStage; // Get item stage
+
+                    const numericScore = parseInt(score, 10); // Convert score to a number
+
+                    // Log all relevant data
+                    console.log(`Contestant ID: ${contestantId}, Group Name: ${groupName}, Item ID: ${itemId}, Score: ${numericScore}, Type: ${itemType}, Category: ${itemCategory}`);
+
+                    if (contestantId && !isNaN(numericScore)) {
+                        // Validation logic
+                        if (numericScore < 0 || numericScore > 100) {
+                            alert('Score must be between 0 and 100.');
+                            return; // Exit if score is out of range
+                        }
+
+                        // Track unique scores logic
+                        if (scoreMap.has(itemId)) {
+                            const existingScores = scoreMap.get(itemId);
+                            if (existingScores.includes(numericScore)) {
+                                alert(`Score ${numericScore} is already assigned for another contestant in this item.`);
+                                return; // Exit if the score already exists for this item
+                            }
+                            existingScores.push(numericScore); // Add the new score to the array
+                        } else {
+                            scoreMap.set(itemId, [numericScore]); // Initialize the array with the score
+                        }
+
+                        // Push the score along with other details into the scores array
+                        scores.push({ contestantId, groupName, itemId, score: numericScore, itemType, itemCategory, itemStage });
+                    }
+                });
+
+                // Log the scores being sent for debugging
+                console.log('Scores being sent:', scores);
+
+                if (scores.length === 0) {
+                    alert('No valid scores to save!');
+                    return; // Exit if no valid scores
+                }
+
+                try {
+                    const response = await fetch('/jury/save-scores', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ scores }) // Sending the updated scores array
+                    });
+
+                    // Check if response is OK before parsing as JSON
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const result = await response.json();
+                    console.log('Fetch result:', result); // Log fetch result for debugging
+                    if (result.success) {
+                        alert('Scores saved successfully!');
+                        // Optionally reset the score inputs here
+                    } else {
+                        alert('Error saving scores: ' + (result.message || 'Unknown error.'));
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving scores.');
+                }
+            });
+
+
+
+
+
+            // Handle score input click to show modal
+            const scoreInputs = document.querySelectorAll('.score-input');
+
+            scoreInputs.forEach(function (input) {
+                input.addEventListener('click', function () {
+                    const contestantId = input.closest('.d-flex').querySelector('.contestant-id').value;
+                    const groupName = input.closest('.d-flex').querySelector('.group-name').value; // Get group name for editing
+                    const currentScore = input.value;
+                    const itemElement = input.closest('.parent-section'); // Get item element
+                    const itemId = itemElement.dataset.itemId; // Get item ID for editing
+                    const itemType = itemElement.dataset.itemType; // Get item type for editing
+                    const itemCategory = itemElement.dataset.itemCategory; // Get item category for editing
+                    const itemStage = itemElement.dataset.itemStage; // Get item stage for editing
+
+                    console.log('Editing Score Modal - Item ID:', itemId); // Log itemId in modal context
+
+                    document.getElementById('editScoreInput').value = currentScore;
+                    document.getElementById('editContestantId').value = contestantId;
+                    document.getElementById('editGroupName').value = groupName; // Set group name in modal
+                    document.getElementById('editItemId').value = itemId; // Set item ID in modal
+                    document.getElementById('editItemType').value = itemType; // Set item type in modal
+                    document.getElementById('editItemCategory').value = itemCategory; // Set item category in modal
+                    document.getElementById('editItemStage').value = itemStage; // Set item stage in modal
+                    $('#editScoreModal').modal('show'); // Show modal using Bootstrap's JS
+                });
+            });
+
+            // Handle save changes in modal
+            document.getElementById('saveEditScoreBtn').addEventListener('click', function () {
+                const newScore = document.getElementById('editScoreInput').value;
+                const contestantId = document.getElementById('editContestantId').value;
+                const groupName = document.getElementById('editGroupName').value; // Get group name from modal
+                const itemId = document.getElementById('editItemId').value; // Get item ID
+                const itemType = document.getElementById('editItemType').value; // Get item type
+                const itemCategory = document.getElementById('editItemCategory').value; // Get item category
+                const itemStage = document.getElementById('editItemStage').value; // Get item stage
+
+                // Update the score input in the corresponding contestant's item
+                const contestantInput = document.querySelector(`.contestant-id[value="${contestantId}"]`);
+                if (contestantInput) {
+                    contestantInput.closest('.d-flex').querySelector('.score-input').value = newScore;
+                }
+                $('#editScoreModal').modal('hide'); // Hide modal using Bootstrap's JS
+            });
+
+            // Ensure close button works
+            const closeButtons = document.querySelectorAll('.close, .btn-secondary');
+            closeButtons.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    $('#editScoreModal').modal('hide'); // Hide modal using Bootstrap's JS
+                });
+            });
+        });
+    </script>
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,128 @@
+<style>
+    :root {
+        --white: #fff;
+        --dark: #000000;
+
+        --light-white: #F1F1F1;
+
+        --ivory: #FFFFF0;
+
+        --dark-gray: #333333;
+
+        /* Vibrant Gradient Colors */
+        --vibrant-gradient-top-left: #9564E0;
+        --vibrant-gradient-top-right: #E1729C;
+        --vibrant-gradient-bottom-left: #5781F5;
+        --vibrant-gradient-bottom-right: #8A65FF;
+
+
+        /* Box Shadow */
+        --card-shadow: 4px 6px 15px rgba(0, 0, 0, 0.2);
+
+        --glass-blur: 10px;
+
+        --vibrant-gradient: linear-gradient(to bottom right,
+                var(--vibrant-gradient-top-left),
+                var(--vibrant-gradient-top-right) 33%,
+                var(--vibrant-gradient-bottom-left) 66%,
+                var(--vibrant-gradient-bottom-right));
+    }
+
+    .navbar {
+        background: #f5f5f5;
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        height: 70px;
+        box-shadow: 0 6px 20px rgb(241, 239, 239);
+    }
+
+    .navbar-brand {
+        color: var(--ivory);
+    }
+
+    .navbar-brand:hover {
+        color: var(--white);
+    }
+
+    .navbar .nav-item {
+        background: linear-gradient(135deg, #000000 0%, #202126 100%);
+        margin-right: 10px;
+        margin-bottom: 5px;
+        border-radius: 20px;
+        border: none;
+        padding: 2px 15px;
+
+    }
+
+    .navbar .logout {
+        background: var(--dark);
+    }
+
+    .navbar .nav-item:hover {
+        background: var(--vibrant-gradient-top-right);
+    }
+
+    .navbar .nav-item a {
+        color: var(--white);
+        font-size: 13px;
+    }
+</style>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-xl navbar-light bg-light shadow">
+    <div class="container-fluid">
+        <!-- Brand/logo -->
+        <a class="navbar-brand" href="#">ALATHURPADI DARS FEST</a>
+
+        <!-- Offcanvas toggler button (only visible on mobile) -->
+        <button class="navbar-toggler d-xl-none" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar items for larger screens (hidden on mobile) -->
+        <div class="collapse navbar-collapse d-none d-xl-block">
+            <ul class="navbar-nav m-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="/admin">HOME</a></li>
+                <li class="nav-item"><a class="nav-link" href="/admin/items/add">ADD ITEMS</a></li>
+                <li class="nav-item"><a class="nav-link" href="/admin/items">GET ITEMS</a></li>
+                <li class="nav-item"><a class="nav-link" href="/admin/contestants">MANAGE CONTESTANTS</a>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="/admin/create-jury">CREATE JURY PANEL</a></li>
+                <li class="nav-item"><a class="nav-link" href="/admin/view-juries">VIEW JURIES</a></li>
+            </ul>
+            <ul class="navbar-nav m-auto mb-2 mb-xl-0">
+                <li class="nav-item logout"><a class="nav-link" href="/admin/logout">Log Out</a></li>
+            </ul>
+            <ul class="navbar-nav m-auto mb-2 mb-xl-0">
+                <li class="nav-item logout"><!-- In your dashboard view, add the following button -->
+                    <a href="view-items-participants" class="btn">
+                        View All Contestants
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Offcanvas menu (only visible on mobile) -->
+        <div class="offcanvas offcanvas-end d-xl-none" tabindex="-1" id="offcanvasNavbar"
+            aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item"><a class="nav-link" href="/admin">HOME</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/items/add">ADD ITEMS</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/items">GET ITEMS</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/contestants">MANAGE CONTESTANTS</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/create-jury">CREATE JURY PANEL</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/view-juries">VIEW JURIES</a></li>
+                </ul>
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item logout"><a class="nav-link" href="/admin/logout">Log Out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>

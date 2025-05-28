@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap" rel="stylesheet">
+    <style>
+        /* Page styling */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            height: 100vh;
+            background: black;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Container for the animated text */
+        .animated-text {
+            text-align: center;
+            font-size: 11vw;
+            color: transparent;
+            text-transform: uppercase;
+        }
+
+        /* Styling for each character's animation */
+        .animated-text span {
+            display: inline-block;
+            text-shadow: 0 0 0 gold;
+            animation: fadeSkew 3s infinite;
+        }
+
+        /* Animation effects with delay for each character */
+        .animated-text span:nth-child(odd) {
+            animation-name: skewLeft;
+        }
+        .animated-text span:nth-child(even) {
+            animation-name: skewRight;
+        }
+        
+        /* Loading text styling */
+        .loading-text {
+            font-size: 5vw;
+            margin-top: 10px;
+            color: gold;
+            animation: fade 3s infinite;
+        }
+
+        /* Keyframes for left and right skew effects */
+        @keyframes skewLeft {
+            50% {
+                transform: skew(50deg) translateY(-200%);
+                text-shadow: 0 0 50px gold;
+                opacity: 0;
+            }
+        }
+
+        @keyframes skewRight {
+            50% {
+                transform: skew(-50deg) translateY(-200%);
+                text-shadow: 0 0 50px gold;
+                opacity: 0;
+            }
+        }
+
+        /* Fade animation for the loading text */
+        @keyframes fade {
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="">
+    <div class="animated-text">
+        <!-- Each letter is animated individually for a dynamic effect -->
+        <span>M</span><span>E</span><span>H</span><span>R</span><span>A</span><span>J</span><span>A</span><span>N</span>
+        <span> 2</span><span>K</span><span>2</span><span>4</span>
+    </div>
+    <div class="loading-text">Loading...</div>
+</body>
+</html>

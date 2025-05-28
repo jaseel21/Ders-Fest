@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        <style> :root {
+            --primary-bg-color: #f4f4f4;
+            --header-bg-color: #4C8BF5;
+            --category-bg-color: #B5D7F9;
+            --border-color: #ddd;
+            --text-color: #333;
+            --highlight-color: #ffb72c;
+        }
+
+        .conatiner-fluid {
+            background: var(--primary-bg-color);
+        }
+
+        .container h1 {
+            color:#ffb72c;
+        }
+
+        /* Responsive wrapper for horizontal scroll */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            /* Smooth scrolling on iOS */
+        }
+
+        /* Results Table Styles */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+            background-color: #fff;
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+
+
+        /* Header styles */
+        .results-table thead th {
+            background-color: #4a90e2;
+            /* Light blue for headers */
+            color: white;
+            font-weight: bold;
+            padding: 12px;
+            border-bottom: 3px solid #3a78c9;
+            /* Slightly darker shade */
+        }
+
+        .category-header {
+            background-color: #2c6cbf;
+            /* Darker shade for category headers */
+        }
+
+        /* Body row styles */
+        .results-table tbody tr:nth-child(even) {
+            background-color: #f3f6fa;
+            /* Light gray for alternating rows */
+        }
+
+        .results-table tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+            /* White for contrast */
+        }
+
+        .results-table tbody td,
+        .results-table tbody th {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+            /* Light border for table cells */
+        }
+
+        /* Mobile-specific adjustments */
+        @media (max-width: 768px) {
+            .container h1 {
+                font-size: 18px;
+            }
+
+            .container h2 {
+                font-size: 16px;
+            }
+
+            .results-table th,
+            .results-table td {
+                font-size: 14px;
+                /* Smaller font for mobile */
+                padding: 6px;
+            }
+
+            .category-header {
+                font-size: 14px;
+            }
+        }
+
+        /* Highlight effect on hover */
+        .results-table tbody tr:hover {
+            background-color: #e6f1fb;
+            /* Light blue on hover */
+        }
+
+        /* Border radius for table */
+        .results-table {
+            border-radius: 10px;
+            overflow: hidden;
+            /* Smooth rounded edges */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="container py-5">
+            <h1 class="group-name mb-4">{{groupName}}'s Results</h1>
+
+            <!-- Responsive Wrapper for Mobile Scrolling -->
+            <div class="table-responsive">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th colspan="3" class="category-header">A Category</th>
+                            <th colspan="3" class="category-header">B Category</th>
+                            <th colspan="3" class="category-header">C Category</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>First</th>
+                            <th>Second</th>
+                            <th>Third</th>
+                            <th>First</th>
+                            <th>Second</th>
+                            <th>Third</th>
+                            <th>First</th>
+                            <th>Second</th>
+                            <th>Third</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#if results}}
+                        {{#each results}}
+                        <tr>
+                            <td>{{item}}</td>
+                            <td>{{AType.first}}</td>
+                            <td>{{AType.second}}</td>
+                            <td>{{AType.third}}</td>
+                            <td>{{BType.first}}</td>
+                            <td>{{BType.second}}</td>
+                            <td>{{BType.third}}</td>
+                            <td>{{CType.first}}</td>
+                            <td>{{CType.second}}</td>
+                            <td>{{CType.third}}</td>
+                        </tr>
+                        {{/each}}
+                        {{else}}
+                        <tr>
+                            <td colspan="7">{{message}}</td>
+                        </tr>
+                        {{/if}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>items</title>
+  <style>
+    :root {
+      --white: #fff;
+      --dark: #000000;
+
+      --light-white: #F1F1F1;
+
+      --ivory: #FFFFF0;
+
+      --dark-gray: #333333;
+
+      /* Vibrant Gradient Colors */
+      --vibrant-gradient-top-left: #9564E0;
+      --vibrant-gradient-top-right: #E1729C;
+      --vibrant-gradient-bottom-left: #5781F5;
+      --vibrant-gradient-bottom-right: #8A65FF;
+
+
+      /* Box Shadow */
+      --card-shadow: 4px 6px 15px rgba(0, 0, 0, 0.2);
+
+      --glass-blur: 10px;
+
+      --vibrant-gradient: linear-gradient(to bottom right,
+          var(--vibrant-gradient-top-left),
+          var(--vibrant-gradient-top-right) 33%,
+          var(--vibrant-gradient-bottom-left) 66%,
+          var(--vibrant-gradient-bottom-right));
+    }
+
+    * {
+      font-family: 'General Sans', sans-serif;
+    }
+
+    body {
+      background: #202126;
+    }
+
+    /* Styling the select dropdown */
+    select {
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+      color: #333;
+      background-color: #f9f9f9;
+      appearance: none;
+      background-size: 12px;
+    }
+
+    /* Styling options */
+    select option {
+      padding: 8px;
+      /* Adds spacing within each option */
+      background-color: #fff;
+      /* Default background color */
+      color: #333;
+      /* Default text color */
+    }
+
+    /* Hover effect on options - works in some browsers */
+    select option:hover {
+      background-color: #f0f0f0;
+    }
+
+    /* Focused or selected option styles */
+    select option:checked,
+    select option:focus {
+      background-color: var(--vibrant-gradient-bottom-left);
+      /* Primary color */
+      color: #fff;
+      /* Contrast text color */
+    }
+
+    .filter-btn {
+      padding: 5px 20px;
+      border-radius: 10px;
+      background: var(--vibrant-gradient-bottom-left);
+      border: none;
+      color: var(--white);
+      margin-left: 15px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 767px) {
+      select {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+
+    .title {
+      color: var(--white);
+    }
+
+    .filter-form option {
+      padding: 10px;
+    }
+
+    /* Mobile View */
+    @media (max-width: 767px) {
+      .filter-form {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .filter-form label,
+      .filter-form select,
+      .filter-form button {
+        width: 100%;
+        margin-right: 0;
+      }
+
+      .filter-form select {
+        margin-bottom: 10px;
+      }
+
+      .filter-form button {
+        width: auto;
+        align-self: center;
+      }
+    }
+
+    .card {
+      background: #202126;
+      color: var(--white);
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .card-title {
+      text-transform: capitalize;
+      color: var(--vibrant-gradient-bottom-right);
+    }
+
+    /* Toggle switch style */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 25px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #f5f5f5;
+      transition: 0.4s;
+      border-radius: 25px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 19px;
+      width: 19px;
+      left: 4px;
+      bottom: 3px;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: #059700;
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(25px);
+    }
+
+    .manage-btn {
+      background: var(--ivory);
+      font-size: 14px;
+    }
+
+    .share-btn {
+      font-size: 16px;
+      background: var(--ivory);
+    }
+
+    .delete-btn {
+      font-size: 16px;
+      background: var(--ivory);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="container">
+      <div class="row pt-5">
+        <div class="col-md-3">
+          <h2 class="title">Items</h2>
+        </div>
+        <div class="col-md-8">
+          <!-- Filters -->
+          <form method="GET" action="/admin/filteredItems" class="filter-form">
+            <label for="category">Category:</label>
+            <select name="category" id="category">
+              <option value="">All</option>
+              <option value="subjunior">Subjunior</option>
+              <option value="junior">Junior</option>
+              <option value="senior">Senior</option>
+              <option value="general(individual)">General (Individual)</option>
+              <option value="general(group)">General (Group)</option>
+            </select>
+
+            <label for="type">Type:</label>
+            <select name="type" id="type">
+              <option value="">All</option>
+              <option value="C">C</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+            </select>
+
+            <label for="stage">Stage:</label>
+            <select name="stage" id="stage">
+              <option value="">All</option>
+              <option value="stage">Stage</option>
+              <option value="offstage">Offstage</option>
+            </select>
+
+            <button type="submit" class="filter-btn">Filter</button>
+          </form>
+        </div>
+      </div>
+      <div class="row mt-5">
+        {{#each items}}
+        <div class="col-md-4 col-sm-12 mb-3">
+          {{#if (eq this.type 'C')}}
+          <div class="card" style="border: 3px solid gold;">
+            {{else if (eq this.type 'A')}}
+            <div class="card" style="border: 3px solid #C0C0C0;">
+              {{else if (eq this.type 'B')}}
+              <div class="card" style="border:3px solid #cd7f32;">
+                {{else}}
+                <div class="card">
+                  {{/if}}
+
+                  <div class="card-body">
+                    <label class="switch" style="float: right;">
+                      <input type="checkbox" id="toggle-{{this._id}}" onchange="toggleItem('{{this._id}}')" {{#if
+                        this.isChecked}}checked{{/if}}>
+                      <span class="slider"></span>
+                    </label>
+
+                    <h5 class="card-title">{{this.name}}</h5>
+                    <p>Category: {{this.category}}</p>
+                    <p>Stage: {{this.stage}}</p>
+                    <p>Participants: {{this.participants.length}}</p>
+                    <span style="display: flex; justify-content: space-between">
+                      <a href="/admin/items/{{this._id}}" class="btn manage-btn">Manage Contestants</a>
+                      <button class="btn share-btn" onclick="openJuryModal('{{this._id}}')"><i class="fa fa-share"></i>
+                      </button>
+                      <!-- Add delete button here -->
+                      <button class="btn delete-btn" onclick="deleteItem('{{this._id}}')">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              {{/each}}
+              {{#if (eq items.length 0)}}
+              <p>No items found</p>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+  <!-- Modal for Jury selection -->
+  <div class="modal fade" id="juryModal" tabindex="-1" aria-labelledby="juryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="juryModalLabel">Select a Jury to Assign</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="juryList" class="row">
+            {{#each juries}}
+            <div class="col-sm-4 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">{{this.username}}</h5>
+                  <button class="btn btn-success" onclick="assignJury('{{this._id}}')">Assign</button>
+                </div>
+              </div>
+            </div>
+            {{else}}
+            <p>No juries found.</p>
+            {{/each}}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Initialize global variables
+    let selectedItemId = null;
+    let selectedItems = [];
+    const socket = io();
+
+    // Open the jury modal
+    function openJuryModal(itemId) {
+      selectedItemId = itemId;
+
+      // Show the modal
+      const juryModal = new bootstrap.Modal(document.getElementById('juryModal'));
+      juryModal.show();
+    }
+
+    // Assign a jury to the selected item
+    function assignJury(juryId) {
+      fetch('/admin/assign-jury-to-item', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          itemId: selectedItemId,
+          juryId: juryId,
+        }),
+      })
+        .then(response => response.json())
+        .then(result => {
+          if (result.success) {
+            alert('Item assigned to jury successfully!');
+            // Fetch and display item details
+            fetchItemDetails(selectedItemId);
+          } else {
+            alert('Failed to assign item to jury.');
+          }
+        })
+        .catch(error => {
+          console.error('Error assigning jury:', error);
+          alert('An error occurred while assigning the jury.');
+        });
+    }
+
+
+
+    // Toggle item selection and update its state
+    function toggleItem(itemId) {
+      const toggleSwitch = document.getElementById(`toggle-${itemId}`);
+      const isChecked = toggleSwitch.checked;
+
+      if (isChecked) {
+        if (!selectedItems.includes(itemId)) selectedItems.push(itemId);
+      } else {
+        selectedItems = selectedItems.filter(id => id !== itemId);
+      }
+
+      calculateForSelectedItems();
+      updateItemState(itemId, isChecked);
+    }
+
+    // Update item state on the server
+    async function updateItemState(itemId, isChecked) {
+      try {
+        const response = await fetch('/admin/items/update-state', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ itemId, isChecked })
+        });
+        const result = await response.json();
+
+        if (result.success) {
+          console.log(`State for item ${itemId} updated on server`);
+        } else {
+          console.error('Failed to update state on server');
+        }
+      } catch (error) {
+        console.error('Error updating state:', error);
+      }
+    }
+
+
+
+    // Real-time synchronization with WebSocket
+    socket.on('checkbox-state-changed', ({ itemId, isChecked }) => {
+      const toggleSwitch = document.getElementById(`toggle-${itemId}`);
+      if (toggleSwitch) {
+        toggleSwitch.checked = isChecked;
+      }
+    });
+
+    // Load item states on DOM content load
+    document.addEventListener('DOMContentLoaded', async function () {
+      try {
+        const response = await fetch('/admin/items');
+        const items = await response.json();
+        items.forEach(item => {
+          const toggleSwitch = document.getElementById(`toggle-${item._id}`);
+          if (toggleSwitch) {
+            toggleSwitch.checked = item.isChecked;
+          }
+        });
+      } catch (error) {
+        console.error('Error fetching item states:', error);
+      }
+    });
+
+
+
+
+
+    // Calculates points and top performers for selected items
+    function calculateForSelectedItems() {
+      if (!selectedItems.length) {
+        console.log('No items selected for calculation.');
+        return;
+      }
+
+      console.log('Calculating for items:', selectedItems);
+
+      // Send selected items to backend for calculation
+      fetch(`/user/calculate-multiple`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemIds: selectedItems })
+      })
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+          // No need to parse the response
+          console.log('Calculation request sent successfully.');
+        })
+        .catch(error => {
+          console.error('Error calculating items:', error);
+        });
+    }
+
+
+    function deleteItem(itemId) {
+      if (confirm("Are you sure you want to delete this item and all related data?")) {
+        fetch(`/admin/items/${itemId}`, {
+          method: 'DELETE'
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert(data.message);
+              location.reload(); // Refresh the page to show the updated items
+            } else {
+              alert(data.message);
+            }
+          })
+          .catch(error => console.error('Error deleting item:', error));
+      }
+    }
+
+
+    async function applyFilters() {
+      const category = document.getElementById('categoryFilter').value;
+      const type = document.getElementById('typeFilter').value;
+      const stage = document.getElementById('stageFilter').value;
+
+      try {
+        const response = await fetch(`/items?category=${category}&type=${type}&stage=${stage}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          renderItems(data.items); // Render filtered items
+        } else {
+          console.error('Failed to fetch filtered items:', data.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    function renderItems(items) {
+      const itemList = document.getElementById('itemList');
+      itemList.innerHTML = '';
+
+      if (items.length === 0) {
+        itemList.innerHTML = '<p>No items found</p>';
+      } else {
+        items.forEach(item => {
+          // Render each item card (add your HTML structure here)
+        });
+      }
+    }
+
+  </script>
+</body>
+
+</html>
