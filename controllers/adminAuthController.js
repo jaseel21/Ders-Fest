@@ -1,6 +1,6 @@
 // controllers/adminAuthController.js
 const adminController = require('../controllers/adminControllers');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const session = require('express-session');
 
 // Mocked admin credentials
